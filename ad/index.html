@@ -1020,6 +1020,25 @@
 						return key in sprout.util.Querystring.urlParams ? sprout.util.Querystring.urlParams[key] : null
 					}
 				};
+				goog.provide("sprout.util.Window");
+				goog.require("sprout");
+				if (!COMPILED) {
+					sprout.util = sprout.util || {};
+				}
+				sprout.util.Window = {
+					center: function(el, options){
+						setTimeout(function(){
+							var height = options.h;
+							var	width = options.w;
+							var	x = (document.body.clientWidth - width) / 2;
+							var	y = (document.body.clientHeight - height) / 2;
+							var	trans = (options.animate) ? 'top 200ms ease-in 50ms, left 200ms ease-in 50ms' : '';
+							el.style.webkitTransition = trans;
+							el.style.left = x + "px";
+							el.style.top = y + "px";
+						}, 100)
+					}
+				};
 				goog.provide("sprout.util.Browser");
 				goog.provide("sprout.util.BrowserUtil");
 				goog.require("sprout.core.Class");
@@ -1970,6 +1989,7 @@
 								this.innerDivHtml.style.width = this.startPage.w + "px";
 								this.innerDivHtml.style.height = this.startPage.h + "px";
 								this.innerDivHtml.style.left = 0;
+								sprout.util.Window.center(this.innerDivHtml, {animate: false, w:this.startPage.w, h:this.startPage.w});
 								sprout.wrapper.TempUtil.appendChild(this.outerDivHtml, this.innerDivHtml);
 								var parObj = {
 									wmode: "transparent",
@@ -2067,6 +2087,7 @@
 												sprout.wrapper.TempUtil.timer_scrollToOffsetTop()
 											}
 										}
+										sprout.util.Window.center(_this.innerDivHtml, {animate: true, w: msg.width, h: msg.height});
 										_this.iframeHtml.style.width = msg.width + "px";
 										_this.iframeHtml.style.height = msg.height + "px";
 										break;
@@ -2092,6 +2113,7 @@
 												sprout.wrapper.TempUtil.timer_scrollToOffsetTop()
 											}
 										}
+										sprout.util.Window.center(_this.innerDivHtml, {animate: true, w: msg.width, h: msg.height});
 										_this.iframeHtml.style.width = msg.width + "px";
 										_this.iframeHtml.style.height = msg.height + "px";
 										break;
@@ -2192,6 +2214,7 @@
 								this.innerDivHtml.style.width = this.startPage.w + "px";
 								this.innerDivHtml.style.height = this.startPage.h + "px";
 								this.innerDivHtml.style.left = 0;
+								sprout.util.Window.center(this.innerDivHtml, {animate: false, w: this.minWidth, h: this.minHeight});
 								sprout.wrapper.TempUtil.appendChild(this.outerDivHtml, this.innerDivHtml);
 								this.startPreloader();
 								var iframeQuerystring = "";
@@ -2219,6 +2242,8 @@
 										window.addEventListener("orientationchange", function (event) {
 											if (_this.iframeHtml && _this.iframeHtml.contentWindow !== null) {
 												_this.iframeHtml.contentWindow.postMessage("{" + '"action":"orientationchange",' + '"orientation":' + window.orientation + "}", "*")
+												var toAnimate = (window.orientation === 0 || window.orientation === 180) ? false : true;
+												sprout.util.Window.center(_this.innerDivHtml, {animate: toAnimate, w: _this.iframeHtml.clientWidth, h: _this.iframeHtml.clientHeight});
 											}
 										}, false)
 									} else {
@@ -2232,6 +2257,10 @@
 											lastOrientation = window.orientation
 										}, false)
 									}
+								} else {
+									window.addEventListener("resize", function (event) {
+										sprout.util.Window.center(_this.innerDivHtml, {animate: true, w: _this.iframeHtml.clientWidth, h: _this.iframeHtml.clientHeight});
+									});
 								}
 							} else {
 								if (this.fallBackImageURL) {
@@ -2715,7 +2744,7 @@
 				sproutTrackingEndpoint: 'http://beacon.mung.sproutinc.com/',
 				autoDetectRoot: true,
 				bannerURL: '',
-				cdnBase: 'http://sprout.local/step3/ad/',
+				cdnBase: 'http://192.168.1.20:3000/ad/',
 				customPreloaderHeight: 0,
 				customPreloaderSource: '',
 				customPreloaderWidth: 0,
@@ -2724,7 +2753,7 @@
 				fallBackImageURL: '',
 				height: 50,
 				iframeId: 'Sprout_KgA0LQ5UAjm1hNXe',
-				iframeSourceURL: 'http://sprout.local/step3/ad/ad.html?v=1',
+				iframeSourceURL: 'http://192.168.1.20:3000/ad.html?v=1',
 				isPreview: false,
 				isShowCaseBundle: false,
 				loaderMode: 'html',
